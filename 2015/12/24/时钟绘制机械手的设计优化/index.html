@@ -1,0 +1,887 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="机械手,控制程序,Arduino," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Robotics Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="介绍一个时钟绘制机械手的小程序，这是一个非常有趣的小时钟，由两个机器人剪刀臂在一个面板上绘制时间。如果之前你从来没有看到它是怎么工作的，先看这个。这是2015年，这是我在网上看到的一个非常有趣的小机械手。当时我试图自己去做一个，但这个想法由于一些其它事情而被耽搁了，因此有很长一段时间我在想怎么去做一个？下面是我当时想的几点问题：1、最初的设计者是如何计算出的每一个手臂的长度？2、图纸面积有多大？3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="时钟绘制机械手的设计优化">
+<meta property="og:url" content="http://xuqianzheng.com/2015/12/24/时钟绘制机械手的设计优化/index.html">
+<meta property="og:site_name" content="Robotics Blog">
+<meta property="og:description" content="介绍一个时钟绘制机械手的小程序，这是一个非常有趣的小时钟，由两个机器人剪刀臂在一个面板上绘制时间。如果之前你从来没有看到它是怎么工作的，先看这个。这是2015年，这是我在网上看到的一个非常有趣的小机械手。当时我试图自己去做一个，但这个想法由于一些其它事情而被耽搁了，因此有很长一段时间我在想怎么去做一个？下面是我当时想的几点问题：1、最初的设计者是如何计算出的每一个手臂的长度？2、图纸面积有多大？3">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-01.gif">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-02.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-03.png">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-04.png">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-05.png">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-06.png">
+<meta property="og:updated_time" content="2016-04-02T09:32:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="时钟绘制机械手的设计优化">
+<meta name="twitter:description" content="介绍一个时钟绘制机械手的小程序，这是一个非常有趣的小时钟，由两个机器人剪刀臂在一个面板上绘制时间。如果之前你从来没有看到它是怎么工作的，先看这个。这是2015年，这是我在网上看到的一个非常有趣的小机械手。当时我试图自己去做一个，但这个想法由于一些其它事情而被耽搁了，因此有很长一段时间我在想怎么去做一个？下面是我当时想的几点问题：1、最初的设计者是如何计算出的每一个手臂的长度？2、图纸面积有多大？3">
+<meta name="twitter:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/plot-01.gif">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 时钟绘制机械手的设计优化 | Robotics Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3f7ae1fa714b160af9e4a2f1cc75d137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Robotics Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">专注于机器人学</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-calendar fa-fw"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user-secret fa-fw"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-heartbeat fa-fw"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'Wnk8iKCfVshQxXfRdQ_x','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                时钟绘制机械手的设计优化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-24T21:42:58+08:00" content="2015-12-24">
+              2015-12-24
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/24/时钟绘制机械手的设计优化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/24/时钟绘制机械手的设计优化/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>介绍一个时钟绘制机械手的小程序，这是一个非常有趣的小时钟，由两个机器人剪刀臂在一个面板上绘制时间。如果之前你从来没有看到它是怎么工作的，先看这个。<br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/plot-01.gif" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/plot-02.jpg" alt=""><br>这是2015年，这是我在网上看到的一个非常有趣的小机械手。当时我试图自己去做一个，但这个想法由于一些其它事情而被耽搁了，因此有很长一段时间我在想怎么去做一个？下面是我当时想的几点问题：<br>1、最初的设计者是如何计算出的每一个手臂的长度？<br>2、图纸面积有多大？<br>3、我该如何使它更大？<br>4、如何提高精度？<br>在用SolidWorks绘制机械臂结构时，我做了一些数学计算，得到了它是如何工作的基本思路。然后，我决定用精确的参数，让每个手臂得到的最佳仿真结果，这是我最终得到的程序，非常完美，确实可以工作。<br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/plot-03.png" alt=""></p>
+<h2 id="实施"><a href="#实施" class="headerlink" title="实施"></a>实施</h2><p>这个计划的核心是插值代码，包括直线插补和圆弧插补，所以线性插值基本上我们从给定的点，然后计算下一个相邻的点和画它，做这一路的终点，圆弧插补是一样的但我们用sin和cos函数计算各点。<br>既然插补问题就解决了，那么下一个问题是如何将手臂移动到该点呢？让我们以左臂为例。既然我们知道当前绘图点，那么我们可以计算点和左伺服中心之间的距离。因为我们知道下臂的长度（红色）和上臂（蓝色）让这个问题变得知道三边的长度和计算出三个内角，内角之后就可以计算出双手的关节位置。最后我们绘制在图形的所有元素。一个100ms定时器是用来显示动画。</p>
+<h3 id="功能和程序描述"><a href="#功能和程序描述" class="headerlink" title="功能和程序描述"></a>功能和程序描述</h3><p>1、在图形面板，青色和蓝色矩形表示伺服；<br>2、橙色派是移动范围较低的机械臂（红色），如果两个机械臂相撞则需要检查；<br>3、红色和蓝色的节段是较低和上部的机械臂；<br>4、“自动”复选框启用/禁用动画；<br>5、拖动滚动条来调整每个参数；<br>6、“面积计算”按钮显示绘图区点的样式；<br>7、“测试”按钮显示“012”绘图数的结果。</p>
+<h3 id="实验和结果"><a href="#实验和结果" class="headerlink" title="实验和结果"></a>实验和结果</h3><p>最重要的参数：各臂长（L1R1，L2R2）和两舵机的距离。所以我们会调整一个参数保持不变，看这两个参数发生了什么变化。该区域是由5度的伺服控制和点的密度成正比的精度。理想参数将有一个均匀分布的点和大的可用的绘图区。</p>
+<h4 id="调整D（两伺服的距离）"><a href="#调整D（两伺服的距离）" class="headerlink" title="调整D（两伺服的距离）"></a>调整D（两伺服的距离）</h4><p>比较下面的图表中我们可以看到，D增长的区域实际上被挤到了中心，最后消失的距离大于机械臂的总和。第一个配置是失败的因为两舵机碰撞在一起，虽然有一个精彩的点的分布。第二个有一个很好的分配和两个大的绘图区域，但是有点还是点在了“伞”下面，意味着一些输入可能会导致意想不到的位置和碰撞，所以输入角度应仔细检查。<br>至于测试数，则第二个有最好的结果，所有的数字都会变形，最后不能得出数字。<br>所以我们可以说，应该尽可能小。<br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/plot-04.png" alt=""></p>
+<h4 id="调整L1R1（下臂）"><a href="#调整L1R1（下臂）" class="headerlink" title="调整L1R1（下臂）"></a>调整L1R1（下臂）</h4><p>比较下面的数字可以看出，下臂增长绘图区域也会增加，但精度下降。所以这是一个平衡，如果你想要更高的精度，走很短的下臂，如果你想要更大的绘图区域，则选择更长的下臂。值得注意的是，在过去的两个配置，其实有一些地区在“保护伞”不能被吸引，这实际上降低了有效绘图区域。这是因为上面的手臂太短了，所以上臂和下臂的长度应该与它们相配！（他们是兄弟，不要留下任何一个）。<br>第一个数字有一点，它与第二和第三个比它有着良好的性能，但它最后两个数字是完全扭曲的。<br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/plot-05.png" alt=""></p>
+<h4 id="调整L2R2（上臂）"><a href="#调整L2R2（上臂）" class="headerlink" title="调整L2R2（上臂）"></a>调整L2R2（上臂）</h4><p>比较下面的数字可以看出，在绘图区域的增长和移向上的增加，这是直的，因为上手臂太长，在较低的区域，点分布变得更好。有一个问题是在程序中没有显示面板。因此，较长的上半臂需要更大的面板，而面板的下部则是被浪费的。<br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/plot-06.png" alt=""></p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>对于那些自己想要设计时钟绘制机械手的童鞋们应牢记这几点（仅供参考，由于程序的错误，可能不正确）。这些技巧都是建立结构的一些优化，但是优化后它是否符合你们的设计要求，那就依靠个人的设计要求来定。<br>1、伺服系统之间的距离应该是最小的；<br>2、较长的较低的手臂，面积较大，但精度较低，反之亦然；<br>3、较长的上臂区域较高，但已略有改善；<br>4、下臂和上臂的长度应与试验误差相匹配。</p>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>我已将SolidWorks源文件上传至我的<a href="http://tu.vx.com/1603/76100.html#ad-image-0" target="_blank" rel="external">微小网</a>主页。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机械手/" rel="tag">#机械手</a>
+          
+            <a href="/tags/控制程序/" rel="tag">#控制程序</a>
+          
+            <a href="/tags/Arduino/" rel="tag">#Arduino</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/12/工业机器人常用精密减速器技术分析/" rel="next" title="工业机器人常用精密减速器技术分析">
+                <i class="fa fa-chevron-left"></i> 工业机器人常用精密减速器技术分析
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/18/从零开始设计一台CNC机床【上】/" rel="prev" title="从零开始设计一台CNC机床【上】">
+                从零开始设计一台CNC机床【上】 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/24/时钟绘制机械手的设计优化/"
+           data-title="时钟绘制机械手的设计优化" data-url="http://xuqianzheng.com/2015/12/24/时钟绘制机械手的设计优化/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Jason/徐迁征" />
+          <p class="site-author-name" itemprop="name">Jason/徐迁征</p>
+          <p class="site-description motion-element" itemprop="description">赚钱的商业才是最伟大的艺术</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xuqianzheng" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://7xsb4k.com1.z0.glb.clouddn.com/%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AD%A6.jpg" target="_blank">
+                  
+                    <i class="fa fa-weixin"></i> 微信
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/xu-qian-zheng" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> 知乎
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3339723692/profile?topnav=1&wvr=6&is_all=1" target="_blank">
+                  
+                    <i class="fa fa-weibo"></i> 微博
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+            <div class="links-of-blogroll-title">友情链接</div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.androiddevtools.cn" target="_blank">AndroidDevTools</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.vx.com/u/951016107" target="_blank">我的微小网主页</a>
+                </li>
+              
+            </ul>
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实施"><span class="nav-number">1.</span> <span class="nav-text">实施</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#功能和程序描述"><span class="nav-number">1.1.</span> <span class="nav-text">功能和程序描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验和结果"><span class="nav-number">1.2.</span> <span class="nav-text">实验和结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#调整D（两伺服的距离）"><span class="nav-number">1.2.1.</span> <span class="nav-text">调整D（两伺服的距离）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调整L1R1（下臂）"><span class="nav-number">1.2.2.</span> <span class="nav-text">调整L1R1（下臂）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调整L2R2（上臂）"><span class="nav-number">1.2.3.</span> <span class="nav-text">调整L2R2（上臂）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">2.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新"><span class="nav-number">3.</span> <span class="nav-text">更新</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jason/徐迁征</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://github.com">github</a> 强力支持
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xuqianzheng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+
+  
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/MathJax.js"></script>
+    <script type="text/javascript" src="http://cdn.staticfile.org/mathjax/2.4.0/config/TeX-AMS-MML_HTMLorMML.js"></script>
+  
+
+
+  
+
+  
+<script type="text/javascript" async src="//push.zhanzhang.baidu.com/push.js">
+</script>
+
+
+</body>
+</html>

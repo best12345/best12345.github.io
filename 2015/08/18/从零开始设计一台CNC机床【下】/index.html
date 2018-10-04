@@ -1,0 +1,1046 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CNC,机床,机械设计,数控机床," />
+
+
+
+
+
+  <link rel="alternate" href="/rss2.xml" title="面向工资闲扯" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章记录了我有史以来我最喜欢的数控机床的设计。它实际上已经是我做的第三台机器了，它是基于前一台的改进。在我设计这台机器之前已经有设计过一台机器，所以我这次必须设计出更复杂的部分。我的目标是做一个小型台式数控铣床，这样我可以很容易地制作一些电子或机械项目的小零件。没有这台数控机床之前，公司一直在使用这些原型板来焊接PCB。通常花好几个晚上才能焊接好一块控制板，然后再花几个晚上调试它。如果电路板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始设计一台CNC机床【下】">
+<meta property="og:url" content="http://xuqianzheng.com/2015/08/18/从零开始设计一台CNC机床【下】/index.html">
+<meta property="og:site_name" content="面向工资闲扯">
+<meta property="og:description" content="这篇文章记录了我有史以来我最喜欢的数控机床的设计。它实际上已经是我做的第三台机器了，它是基于前一台的改进。在我设计这台机器之前已经有设计过一台机器，所以我这次必须设计出更复杂的部分。我的目标是做一个小型台式数控铣床，这样我可以很容易地制作一些电子或机械项目的小零件。没有这台数控机床之前，公司一直在使用这些原型板来焊接PCB。通常花好几个晚上才能焊接好一块控制板，然后再花几个晚上调试它。如果电路板">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC01.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC02.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC03.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC04.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC05.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC06.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC07.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC08.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC09.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC10.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC11.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC12.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC13.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC14.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC15.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC16.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC17.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC18.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC19.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC20.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC21.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC22.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC23.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC24.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC25.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC26.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC27.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC28.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC32.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC34.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC35.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC36.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC37.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC38.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC39.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC40.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC41.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC42.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC43.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC44.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC45.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC46.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC47.jpg">
+<meta property="og:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC48.jpg">
+<meta property="og:updated_time" content="2016-11-26T11:40:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零开始设计一台CNC机床【下】">
+<meta name="twitter:description" content="这篇文章记录了我有史以来我最喜欢的数控机床的设计。它实际上已经是我做的第三台机器了，它是基于前一台的改进。在我设计这台机器之前已经有设计过一台机器，所以我这次必须设计出更复杂的部分。我的目标是做一个小型台式数控铣床，这样我可以很容易地制作一些电子或机械项目的小零件。没有这台数控机床之前，公司一直在使用这些原型板来焊接PCB。通常花好几个晚上才能焊接好一块控制板，然后再花几个晚上调试它。如果电路板">
+<meta name="twitter:image" content="http://7xsb4k.com1.z0.glb.clouddn.com/CNC01.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xuqianzheng.com/2015/08/18/从零开始设计一台CNC机床【下】/"/>
+
+
+
+
+
+  <title> 从零开始设计一台CNC机床【下】 | 面向工资闲扯 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?3f7ae1fa714b160af9e4a2f1cc75d137";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=56301679";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">面向工资闲扯</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">读书、生活、思考</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://xuqianzheng.com/2015/08/18/从零开始设计一台CNC机床【下】/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="徐迁征">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="面向工资闲扯">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="面向工资闲扯" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从零开始设计一台CNC机床【下】
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-08-18T23:21:46+08:00">
+                2015-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2015/08/18/从零开始设计一台CNC机床【下】/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/18/从零开始设计一台CNC机床【下】/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <span itemprop="image" itemscope="" itemtype="http://schema.org/ImageObject"><img itemprop="url image" src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC01.jpg" class="full-image" alt="alt"><meta itemprop="width" content="auto"><meta itemprop="height" content="auto"></span>
+<p>这篇文章记录了我有史以来我最喜欢的数控机床的设计。它实际上已经是我做的第三台机器了，它是基于前一台的改进。在我设计这台机器之前已经有设计过一台机器，所以我这次必须设计出更复杂的部分。我的目标是做一个小型台式数控铣床，这样我可以很容易地制作一些电子或机械项目的小零件。没有这台数控机床之前，公司一直在使用这些原型板来焊接PCB。通常花好几个晚上才能焊接好一块控制板，然后再花几个晚上调试它。如果电路板有一个严重的问题，或者要做出一些改进，然后又不得不重新开始。有这一台机器后，一切都变得那么简单。可以使用 <font color="#1E90FF">EDA</font> 软件来设计PCB，并验证了电路板的可靠性。有些时候，我得到了一个好主意，然后我就可以直接试验，并且在一天之内就可以进行测试。我还使用 <font color="#1E90FF">SolidWorks</font> 与 <font color="#1E90FF">Altium Designer</font> 的工作，因为我的大部分项目都是机电一体化的。直接将电路板导入到SolidWorks并检查它是否符合项目需求或机器人设计要求，这样更加的方便快捷。<a id="more"></a></p>
+<p>不管怎样，让我们​​开始切入正题。下面是本机的规格参数：</p>
+<ul>
+<li>尺寸：50x40x30厘米</li>
+<li>重量：10-20公斤</li>
+<li>工作区：22x32x10厘米（比A4纸大）</li>
+<li>进给速度：自由运行4.5米/分钟</li>
+<li>PCB：2.5米/分钟</li>
+<li>钻孔：60-150孔/分钟</li>
+<li>铝：100-500毫米/分钟</li>
+<li>主轴：27,000 RPM，300W，BLDC</li>
+<li>公差：&lt;=0.05毫米</li>
+<li>电源：Swtiching电源</li>
+<li>电机：两相步进电机</li>
+<li>控制器： <font color="#1E90FF">CNCUSB</font> ， <font color="#1E90FF">GRBL</font> ，我自己的控制器</li>
+</ul>
+<h2 id="SolidWorks建模"><a href="#SolidWorks建模" class="headerlink" title="SolidWorks建模"></a>SolidWorks建模</h2><p>在这里有很多的改进。第一个是工作面，之前的机器使用了几个月后，我意识到它的工作面很小。有时候，很多材料的尺寸为20×30厘米，有时我不得不削减的尺寸来配合这个工作面。所以，大量的材料就浪费了，因为材料的其余部分太小了，无法做其它用途。这就是为什么我决定做X轴和Y轴尺寸设计为22×32厘米，另外，我还增长了Z轴，这样我可以很容易地改变工具的位置或许我还可以在工作台上加一个虎钳。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC02.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC03.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC04.jpg" alt=""></p>
+<h3 id="底座"><a href="#底座" class="headerlink" title="底座"></a>底座</h3><p>底座采用10毫米铝板。我需要钻一些孔做定位。这两个支柱之间的桥梁很坚固，当我移动机器时可以作为一个手柄。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC05.jpg" alt=""></p>
+<h3 id="Y轴"><a href="#Y轴" class="headerlink" title="Y轴"></a>Y轴</h3><p>这一次，我取消了平台上的铝合金型材，使之更加紧凑。为了固定的更稳和省去装夹具的麻烦，我在边缘均匀的打了一些孔。在该平台上实际上有一个PVC板，以保护铝板。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC06.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC07.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC08.jpg" alt=""></p>
+<h3 id="X坐标"><a href="#X坐标" class="headerlink" title="X坐标"></a>X坐标</h3><p>实际上下图的棒材夹持器不在真正的机器上。这只是为了简化三个分离架设计一种尝试。原来，这不是很好的想法，因为我可以购买标准件，但我却花费大量的时间来做出这样一个相同的零件。而这种设计实际上并没有带来任何好处。也许，这种设计很适合批量生产（回想我当初的设计，我为什么要设计一个3合1的支架的原因是为了减少装配误差，并保持杆和螺钉的平行。因为当时我没有专业的校准工具，我想让装配根容易，但在权衡成本和精度后，我决定去便宜的东西，嗨～经费不足啊！）。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC09.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC10.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC11.jpg" alt=""></p>
+<h3 id="Z轴"><a href="#Z轴" class="headerlink" title="Z轴"></a>Z轴</h3><p>就像X轴，我使用正时皮带，来降低高度。我用滑轨而不是导杆棒，来减少尺寸和增加强度。导轨比导杆棒更贵，因此仅在Z轴使用。还有滚珠丝杠驱动器相对于X和Y轴的直径也较小。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC12.jpg" alt=""></p>
+<h3 id="主轴"><a href="#主轴" class="headerlink" title="主轴"></a>主轴</h3><p>这个小主轴很强悍！我找遍了市场上所有的主轴，没有比这更好的。它直径很小，但有300W的功率。它可以运行 <font color="#1E90FF">27000</font> 转。唯一的不足的是，这个是风扇散热，不是水冷却。所以这有点吵。我还做了一个铝制散热片帮助散热。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC13.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC14.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC15.jpg" alt=""></p>
+<p><strong>X轴，Z轴和主轴</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC16.jpg" alt=""></p>
+<p><strong>X轴，Y轴，Z轴和主轴</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC17.jpg" alt=""></p>
+<p><strong>机器相片</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC18.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC19.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC20.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC21.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC22.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC23.jpg" alt=""></p>
+<p><strong>控制器的特写镜头</strong>，布线有点乱。你会看到很多插槽，我用这个控制箱来测试我自己的控制软件。</p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC24.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC25.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC26.jpg" alt=""></p>
+<p><strong>更多照片：</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC27.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC28.jpg" alt=""></p>
+<p><strong>工作中的机器。所以有点乱…</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC32.jpg" alt=""></p>
+<p><strong>打样照片</strong><br>下面是本机制造的一些零件。<br><strong>木雕的龙</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC34.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC35.jpg" alt=""></p>
+<p><strong>橡皮擦雕刻</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC36.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC37.jpg" alt=""></p>
+<p><strong>PVC头骨</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC38.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC39.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC40.jpg" alt=""></p>
+<p><strong>PCB蚀刻</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC41.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC42.jpg" alt=""></p>
+<p><strong>铝件</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC43.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC44.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC45.jpg" alt=""></p>
+<p><strong>其它零件</strong></p>
+<p><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC46.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC47.jpg" alt=""><br><img src="http://7xsb4k.com1.z0.glb.clouddn.com/CNC48.jpg" alt=""></p>
+<h2 id="更多阅读"><a href="#更多阅读" class="headerlink" title="更多阅读"></a>更多阅读</h2><p>该项目只是整个数控项目的一部分。<br>如果你对控制器开发有兴趣，可以点击这里。<br>如果你对CAM软件开发有兴趣，加工PCB的生成刀具路径，可以点击这里。<br>还可以<a href="http://tu.vx.com/1603/76102.html#ad-image-0" target="_blank" rel="external">点击这里</a>下载SolidWorks模型文件。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt="徐迁征 wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果我的文章对您有用，请打赏我一个红包吧！鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechat.png" alt="徐迁征 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="徐迁征 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CNC/" rel="tag"># CNC</a>
+          
+            <a href="/tags/机床/" rel="tag"># 机床</a>
+          
+            <a href="/tags/机械设计/" rel="tag"># 机械设计</a>
+          
+            <a href="/tags/数控机床/" rel="tag"># 数控机床</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/02/04/时钟绘制机械手的设计优化/" rel="next" title="时钟绘制机械手的设计优化">
+                <i class="fa fa-chevron-left"></i> 时钟绘制机械手的设计优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/09/08/Android开发基础01 - 启程/" rel="prev" title="Android开发基础1 - 启程">
+                Android开发基础1 - 启程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/08/18/从零开始设计一台CNC机床【下】/"
+           data-title="从零开始设计一台CNC机床【下】" data-url="http://xuqianzheng.com/2015/08/18/从零开始设计一台CNC机床【下】/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="徐迁征" />
+          <p class="site-author-name" itemprop="name">徐迁征</p>
+          <p class="site-description motion-element" itemprop="description">前端+Android（Python+Ruby）</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/rss2.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/xuqianzheng" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://7xsb4k.com1.z0.glb.clouddn.com/%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AD%A6.jpg" target="_blank" title="微信">
+                  
+                    <i class="fa fa-fw fa-weixin"></i>
+                  
+                  微信
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/xu-qian-zheng" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3339723692/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SolidWorks建模"><span class="nav-number">1.</span> <span class="nav-text">SolidWorks建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#底座"><span class="nav-number">1.1.</span> <span class="nav-text">底座</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Y轴"><span class="nav-number">1.2.</span> <span class="nav-text">Y轴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X坐标"><span class="nav-number">1.3.</span> <span class="nav-text">X坐标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Z轴"><span class="nav-number">1.4.</span> <span class="nav-text">Z轴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主轴"><span class="nav-number">1.5.</span> <span class="nav-text">主轴</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更多阅读"><span class="nav-number">2.</span> <span class="nav-text">更多阅读</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">徐迁征</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xuqianzheng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
